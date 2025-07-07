@@ -47,7 +47,7 @@ O protótipo da aplicação foi validado com o cliente Igo Saldanha por videocon
 ## 👨‍💻 Equipe de Desenvolvimento
 
 - **Antonio Kleberson do Carmo Silva** – 540901
-- **Augusto Vasconcellos Nogueira Diógenes** –
+- **Augusto Vasconcellos Nogueira Diógenes** – 494915
 - **Israel Souza Ferreira** – 511570  
 - **Wellington Santos Rodrigues** – 510581  
 
