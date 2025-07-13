@@ -1,4 +1,5 @@
 .main-bar {
+<<<<<<< HEAD
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,3 +34,61 @@
   background-color: lightgray;
   cursor: pointer;
 }
+=======
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9e9e9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    border-radius: 8px; 
+}
+
+#logo h1 {
+    font-size: 1.8rem;
+    color: #3498db; 
+    margin: 0;
+    flex-shrink: 1;
+    min-width: 100px;
+}
+
+.right-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.right-icons img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    vertical-align: middle;
+}
+
+.right-icons img:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .main-bar {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 15px;
+    }
+
+    #logo h1 {
+        font-size: 1.5rem;
+    }
+
+    .right-icons {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+    }
+}
+>>>>>>> feature/israel
