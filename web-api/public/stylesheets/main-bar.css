@@ -25,6 +25,18 @@
     flex-shrink: 0;
 }
 
+.right-icons > div { 
+    cursor: pointer;
+    padding: 8px 12px; 
+    border-radius: 6px; 
+    transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.right-icons > div:hover {
+    background-color: #f0f0f0; 
+    color: #3498db; 
+}
+
 .right-icons img {
     width: 24px;
     height: 24px;
