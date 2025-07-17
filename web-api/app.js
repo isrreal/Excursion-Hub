@@ -4,8 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var excursoesRouter = require('./routes/excursoes.routes.js'); // <-- Verifique este caminho!
-
+var excursoesRouter = require('./routes/excursoes.routes.js');
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
