@@ -9,3 +9,5 @@ class ExcursaoService {
         return null
     }
 }
+
+module.exports = ExcursaoService
