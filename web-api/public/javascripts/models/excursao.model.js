@@ -1,6 +1,7 @@
 class ExcursaoModel {
-    constructor(localDeViagem, organizador, quantidadeDeParticipantes,
+    constructor(id, localDeViagem, organizador, quantidadeDeParticipantes,
         data, destino, descricao) {
+            this.id = id
             this.localDeViagem = localDeViagem
             this.organizador = organizador
             this.quantidadeDeParticipantes = quantidadeDeParticipantes
