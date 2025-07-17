@@ -12,3 +12,5 @@ const excursoes = [
                     descanso e paisagens de tirar o fôlego.`
     }
 ]
+
+module.exports = excursoes
