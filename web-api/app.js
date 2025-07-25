@@ -8,13 +8,21 @@ var excursoesRouter = require('./routes/excursoes.routes.js');
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade'); 
+app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/criar-excursao', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'criar-excursao.html'));
+});
+
+app.get('/viagem-content', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'viagem-content.html'));
+});
 
 app.use('/api', excursoesRouter);
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" href="stylesheets/main-bar.css">
+        <link rel="stylesheet" href="stylesheets/style.css">
+        <link rel="stylesheet" href="stylesheets/viagem-content.css">
+        <link rel="stylesheet" href="stylesheets/criar-excursao.css">
+        <script src="javascripts/criar-excursao.js"></script>
+        <title>Criar Excursão</title>
+    </head>
+    <body>
+        <div class="content">
+            <div class="main-bar">
+                <div id="logo">
+                    <a href="/"><h1>ExcursionHub</h1></a>
+                </div>
+            </div>
+            <div class="form-container">
+                <h1>Criar Excursão</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="nomeExcursao">Nome da Excursão</label>
+                        <input type="text" id="nomeExcursao" placeholder="Insira o nome da excursão">
+                    </div>
+                    <div class="form-group">
+                        <label for="destino">Destino</label>
+                        <input type="text" id="destino" placeholder="Insira o destino">
+                    </div>
+                    <div class="form-group date-group">
+                        <div class="date-input">
+                            <label for="dataInicio">Data de Início</label>
+                            <input type="text" id="dataInicio" placeholder="Selecione a data de início">
+                        </div>
+                        <div class="date-input">
+                            <label for="dataTermino">Data de Término</label>
+                            <input type="text" id="dataTermino" placeholder="Selecione a data de término">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="custoPessoa">Custo por pessoa</label>
+                        <input type="text" id="custoPessoa" placeholder="Insira o custo por pessoa">
+                    </div>
+                    <div class="form-group">
+                        <label for="veiculo">Veículo</label>
+                        <input type="text" id="veiculo" placeholder="Insira o veículo">
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" rows="5"></textarea>
+                    </div>
+                    <button type="submit">Criar</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
