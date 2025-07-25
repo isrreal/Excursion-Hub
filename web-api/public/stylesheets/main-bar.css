@@ -18,6 +18,10 @@
     min-width: 100px;
 }
 
+#logo a {
+    text-decoration: none;
+}
+
 .right-icons {
     display: flex;
     align-items: center;
