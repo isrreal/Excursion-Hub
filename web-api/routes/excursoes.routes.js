@@ -21,14 +21,20 @@ router.get(
 router.post(
     "/excursoes",
     (request, response) => {
+        // Verifica se o usuário está logado na sessão
+        if (!request.session.user) {
+            return response.status(401).json({ message: "Não autorizado: faça login para criar uma excursão." });
+        }
         try {
-            const novaExcursao = ExcursaoService.criarExcursao(request.body);
+            // Passa o objeto do usuário da sessão para o serviço
+            const novaExcursao = ExcursaoService.criarExcursao(request.body, request.session.user);
             response.status(201).json(novaExcursao);
         } catch (error) {
             response.status(400).json({ message: "Erro ao criar excursão", error: error.message });
         }
     }
 );
+
 
 router.get(
     "/excursoes",

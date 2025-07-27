@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const proximasButton = document.getElementById('proximas-button');
     const passadasButton = document.getElementById('passadas-button');
     const container = document.getElementById('left-section');
+    const logoutButton = document.getElementById('logout-button'); // Botão de logout
 
     let todasAsExcursoes = { proximas: [], passadas: [] };
 
@@ -13,15 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'viagem-content.html';
     }
     
-    // Função para formatar uma data de 'YYYY-MM-DD' para 'DD/MM/YYYY'
     function formatarData(dataString) {
         if (!dataString) return '';
         const [ano, mes, dia] = dataString.split('-');
         return `${dia}/${mes}/${ano}`;
     }
 
-    // Função para criar a string de data a ser exibida
-    // DEFINIDA ANTES de ser usada.
     function criarStringDeData(excursao) {
         const dataInicio = formatarData(excursao.data);
         const dataTermino = formatarData(excursao.dataTermino);
@@ -29,12 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (dataInicio && dataTermino && dataInicio !== dataTermino) {
             return `${dataInicio} a ${dataTermino}`;
         }
-        return dataInicio; // Retorna apenas a data de início se não houver término ou se for o mesmo dia
+        return dataInicio;
     }
 
-    // Função para renderizar a lista de excursões na tela
     function displayExcursions(lista) {
-        container.innerHTML = ''; // Limpa o conteúdo anterior
+        container.innerHTML = ''; 
 
         if (!lista || lista.length === 0) {
             container.innerHTML = '<p>Nenhuma excursão encontrada.</p>';
@@ -61,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Função principal para carregar os dados da API
     async function loadExcursions() {
         try {
             const response = await fetch('/api/excursoes');
@@ -88,17 +84,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    proximasButton.addEventListener('click', () => {
-        displayExcursions(todasAsExcursoes.proximas);
-        proximasButton.classList.add('active');
-        passadasButton.classList.remove('active');
-    });
+    if (proximasButton) {
+        proximasButton.addEventListener('click', () => {
+            displayExcursions(todasAsExcursoes.proximas);
+            proximasButton.classList.add('active');
+            passadasButton.classList.remove('active');
+        });
+    }
 
-    passadasButton.addEventListener('click', () => {
-        displayExcursions(todasAsExcursoes.passadas);
-        passadasButton.classList.add('active');
-        proximasButton.classList.remove('active');
-    });
+    if (passadasButton) {
+        passadasButton.addEventListener('click', () => {
+            displayExcursions(todasAsExcursoes.passadas);
+            passadasButton.classList.add('active');
+            proximasButton.classList.remove('active');
+        });
+    }
+
+    // Lógica do botão de logout
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await fetch('/api/users/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        });
+    }
 
     // --- INICIALIZAÇÃO ---
     loadExcursions();

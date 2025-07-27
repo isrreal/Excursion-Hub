@@ -43,7 +43,8 @@ class ExcursaoService {
         return data.excursoes.find(excursao => excursao.id === id) || null;
     }
     
-    static criarExcursao(dadosExcursao) {
+    // ...
+    static criarExcursao(dadosExcursao, usuario) {
         if (!dadosExcursao.nomeExcursao || !dadosExcursao.destino || !dadosExcursao.dataInicio) {
             throw new Error("Campos obrigatórios (nome, destino, data de início) não preenchidos.");
         }
@@ -52,7 +53,7 @@ class ExcursaoService {
         const novaExcursao = new ExcursaoModel(
             data.excursoes.length > 0 ? Math.max(...data.excursoes.map(e => e.id)) + 1 : 1,
             dadosExcursao.nomeExcursao,
-            'Novo Organizador',
+            usuario.nome, // Usa o nome do usuário da sessão
             dadosExcursao.dataInicio,
             dadosExcursao.destino,
             dadosExcursao.descricao,
@@ -62,10 +63,10 @@ class ExcursaoService {
         );
         
         data.excursoes.push(novaExcursao);
-        writeData(data); // Salva os dados no arquivo
+        writeData(data);
         return novaExcursao;
     }
-
+    
     static atualizarExcursao(id, dadosAtualizados) {
         const data = readData();
         const index = data.excursoes.findIndex(excursao => excursao.id === id);

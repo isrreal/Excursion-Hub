@@ -22,11 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Funções ===
 
-    const loadExcursionData = async () => {
-        if (!excursionId) {
-            window.location.href = 'index.html';
-            return;
-        }
+   const loadExcursionData = async () => {
+        // ... (início da função)
         try {
             const response = await fetch(`/api/excursoes/${excursionId}`);
             if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
@@ -38,15 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('viagem-participantes').textContent = excursion.quantidadeDeParticipantes;
             document.getElementById('data').textContent = new Date(excursion.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
             document.getElementById('destino').textContent = excursion.destino;
+            document.getElementById('veiculo').textContent = excursion.veiculo; // ADICIONE ESTA LINHA
             document.querySelector('#descricao span').textContent = excursion.descricao;
 
             loadParticipants(excursion.participantes || []);
             loadPayments(excursion.participantes || []);
 
         } catch (error) {
-            console.error('Erro ao buscar a excursão:', error);
-            alert('Houve um erro ao carregar os dados da excursão.');
-            window.location.href = 'index.html';
+            // ... (resto da função)
         }
     };
 
@@ -151,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    
+
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(participantForm);
