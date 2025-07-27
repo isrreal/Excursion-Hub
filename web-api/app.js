@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var excursoesRouter = require('./routes/excursoes.routes.js');
+var participantesRouter = require('./routes/participantes.routes.js');
 var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -25,6 +26,7 @@ app.get('/viagem-content', (req, res) => {
 });
 
 app.use('/api', excursoesRouter);
+app.use('/api/excursoes/:excursaoId/participantes', participantesRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));

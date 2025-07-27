@@ -1,27 +1,37 @@
-const ExcursaoModel = require("../models/excursao.model.js");
-const excursoes = require("../data/excursoes.js");
+const fs = require('fs');
+const path = require('path');
+const ExcursaoModel = require('../models/excursao.model.js');
+
+// Caminho para o nosso novo banco de dados em arquivo
+const dbPath = path.resolve(__dirname, '../data/data.json');
+
+// Funções auxiliares para ler e escrever no arquivo
+const readData = () => JSON.parse(fs.readFileSync(dbPath));
+const writeData = (data) => fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+
 
 class ExcursaoService {
-    static recuperarExcursao(id) {
-        return excursoes.find(excursao => excursao.id === id) || null;
-    }
-
     static listarExcursoes() {
-        return excursoes;
+        const data = readData();
+        return data.excursoes;
     }
 
+    static recuperarExcursao(id) {
+        const data = readData();
+        return data.excursoes.find(excursao => excursao.id === id) || null;
+    }
+    
     static criarExcursao(dadosExcursao) {
-        // Validação dos campos que vêm do formulário
         if (!dadosExcursao.nomeExcursao || !dadosExcursao.destino || !dadosExcursao.dataInicio) {
             throw new Error("Campos obrigatórios (nome, destino, data de início) não preenchidos.");
         }
-
+        
+        const data = readData();
         const novaExcursao = new ExcursaoModel(
-            excursoes.length > 0 ? Math.max(...excursoes.map(e => e.id)) + 1 : 1,
-            dadosExcursao.nomeExcursao,     // Mapeado para localDeViagem
-            'Novo Organizador',             // Valor padrão, já que não vem do form
-            0,                              // Valor padrão para participantes
-            dadosExcursao.dataInicio,       // Mapeado para data
+            data.excursoes.length > 0 ? Math.max(...data.excursoes.map(e => e.id)) + 1 : 1,
+            dadosExcursao.nomeExcursao,
+            'Novo Organizador',
+            dadosExcursao.dataInicio,
             dadosExcursao.destino,
             dadosExcursao.descricao,
             dadosExcursao.custoPessoa,
@@ -29,32 +39,33 @@ class ExcursaoService {
             dadosExcursao.dataTermino
         );
         
-        excursoes.push(novaExcursao);
+        data.excursoes.push(novaExcursao);
+        writeData(data); // Salva os dados no arquivo
         return novaExcursao;
     }
 
     static atualizarExcursao(id, dadosAtualizados) {
-        const index = excursoes.findIndex(excursao => excursao.id === id);
-        if (index === -1) {
-            return null;
-        }
+        const data = readData();
+        const index = data.excursoes.findIndex(excursao => excursao.id === id);
+        if (index === -1) return null;
 
         Object.keys(dadosAtualizados).forEach(key => {
             if (dadosAtualizados[key] !== undefined) {
-                excursoes[index][key] = dadosAtualizados[key];
+                data.excursoes[index][key] = dadosAtualizados[key];
             }
         });
 
-        return excursoes[index];
+        writeData(data); // Salva os dados no arquivo
+        return data.excursoes[index];
     }
 
     static removerExcursao(id) {
-        const index = excursoes.findIndex(excursao => excursao.id === id);
-        if (index === -1) {
-            return null;
-        }
+        const data = readData();
+        const index = data.excursoes.findIndex(excursao => excursao.id === id);
+        if (index === -1) return null;
 
-        const excursaoRemovida = excursoes.splice(index, 1);
+        const excursaoRemovida = data.excursoes.splice(index, 1);
+        writeData(data); // Salva os dados no arquivo
         return excursaoRemovida[0];
     }
 }

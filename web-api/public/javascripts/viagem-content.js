@@ -8,12 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('cancel-modal-btn');
     const participantForm = document.getElementById('add-participant-form');
     const participantsListContainer = document.getElementById('lista-participantes-container');
+    const modalTitle = modal.querySelector('h2');
+    const submitButton = modal.querySelector('button[type="submit"]');
+
+    let editingParticipantId = null; // Variável para controlar se estamos editando ou adicionando
 
     // === Funções ===
 
-    /**
-     * Busca e exibe os dados da excursão principal.
-     */
     const loadExcursionData = async () => {
         if (!excursionId) {
             console.warn('Nenhum ID de excursão encontrado. Redirecionando...');
@@ -34,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('destino').textContent = excursion.destino;
             document.querySelector('#descricao span').textContent = excursion.descricao;
 
-            // Carrega os participantes associados
             loadParticipants(excursion.participantes || []);
 
         } catch (error) {
@@ -44,12 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    /**
-     * Carrega e exibe a lista de participantes na tela.
-     * @param {Array} participants - O array de objetos de participantes.
-     */
     const loadParticipants = (participants) => {
-        participantsListContainer.innerHTML = ''; // Limpa a lista antes de adicionar
+        participantsListContainer.innerHTML = ''; 
         if(participants.length === 0) {
             participantsListContainer.innerHTML = '<p>Ainda não há participantes nesta excursão.</p>';
             return;
@@ -59,12 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    /**
-     * Cria e adiciona o HTML de um participante à lista na tela.
-     * @param {object} participant - O objeto do participante com nome, email, etc.
-     */
     const appendParticipantToDOM = (participant) => {
-         // Remove a mensagem "nenhum participante" se ela existir
         const noParticipantsMessage = participantsListContainer.querySelector('p');
         if (noParticipantsMessage) {
             noParticipantsMessage.remove();
@@ -72,9 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const item = document.createElement('div');
         item.className = 'participante-item';
+        item.setAttribute('data-participant-id', participant.id); // Adiciona ID ao item
         item.innerHTML = `
             <div class="participante-info">
-                <img src="images/user_placeholder.png" alt="Avatar" class="participante-avatar">
+                <img src="images/user.png" alt="Avatar" class="participante-avatar">
                 <div>
                     <div class="nome-participante">${participant.nome || 'Nome não informado'}</div>
                     <span class="status-participante pago">${participant.email || 'Status pendente'}</span>
@@ -86,54 +78,137 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         participantsListContainer.appendChild(item);
+
+        // Adiciona os eventos DEPOIS de criar o elemento
+        item.querySelector('.editar').addEventListener('click', () => handleEdit(participant));
+        item.querySelector('.remover').addEventListener('click', () => handleRemove(participant.id));
     };
 
-    /**
-     * Lida com a submissão do formulário para adicionar um novo participante.
-     * @param {Event} event - O evento de submissão do formulário.
-     */
-    const handleAddParticipant = async (event) => {
-        event.preventDefault(); // Impede o recarregamento da página
+    const handleFormSubmit = async (event) => {
+        event.preventDefault(); 
         
         const formData = new FormData(participantForm);
-        const newParticipant = {
+        const participantData = {
             nome: formData.get('name'),
             email: formData.get('email'),
             telefone: formData.get('phone')
         };
+        
+        // Decide se cria um novo ou atualiza um existente
+        if (editingParticipantId) {
+            await updateParticipant(editingParticipantId, participantData);
+        } else {
+            await createParticipant(participantData);
+        }
+    };
 
-        try {
-            // IMPORTANTE: A sua API deve ter um endpoint como este:
-            // POST /api/excursoes/{id}/participantes
+    const createParticipant = async (data) => {
+         try {
             const response = await fetch(`/api/excursoes/${excursionId}/participantes`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newParticipant)
+                body: JSON.stringify(data)
             });
 
-            if (!response.ok) {
-                throw new Error('Falha ao adicionar participante.');
-            }
+            if (!response.ok) throw new Error('Falha ao adicionar participante.');
             
-            const savedParticipant = await response.json(); // A API deve retornar o participante salvo
-            
-            appendParticipantToDOM(savedParticipant); // Adiciona na tela
-            closeModal(); // Fecha o modal
-            participantForm.reset(); // Limpa o formulário
+            const savedParticipant = await response.json(); 
+            appendParticipantToDOM(savedParticipant);
 
+            // Atualiza contagem
+            const countSpan = document.getElementById('viagem-participantes');
+            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+            
+            closeModal(); 
         } catch (error) {
             console.error('Erro ao salvar participante:', error);
             alert('Não foi possível adicionar o participante. Tente novamente.');
         }
     };
+
+    const updateParticipant = async (participantId, data) => {
+        try {
+            const response = await fetch(`/api/excursoes/${excursionId}/participantes/${participantId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) throw new Error('Falha ao atualizar participante.');
+
+            const updatedParticipant = await response.json();
+            
+            // Atualiza a interface
+            const itemToUpdate = participantsListContainer.querySelector(`[data-participant-id='${participantId}']`);
+            if (itemToUpdate) {
+                itemToUpdate.querySelector('.nome-participante').textContent = updatedParticipant.nome;
+                itemToUpdate.querySelector('.status-participante').textContent = updatedParticipant.email;
+            }
+            
+            closeModal();
+        } catch (error) {
+            console.error('Erro ao atualizar participante:', error);
+            alert('Não foi possível atualizar o participante. Tente novamente.');
+        }
+    };
+
+    const handleEdit = (participant) => {
+        editingParticipantId = participant.id;
+        modalTitle.textContent = 'Editar Participante';
+        submitButton.textContent = 'Salvar Alterações';
+        
+        // Preenche o formulário
+        participantForm.querySelector('#participant-name').value = participant.nome;
+        participantForm.querySelector('#participant-email').value = participant.email;
+        participantForm.querySelector('#participant-phone').value = participant.telefone || '';
+
+        openModal();
+    };
+
+    const handleRemove = async (participantId) => {
+        if (!confirm('Tem certeza que deseja remover este participante?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/excursoes/${excursionId}/participantes/${participantId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error('Falha ao remover participante.');
+            
+            // Remove da tela
+            const itemToRemove = participantsListContainer.querySelector(`[data-participant-id='${participantId}']`);
+            if (itemToRemove) itemToRemove.remove();
+
+            // Atualiza contagem
+            const countSpan = document.getElementById('viagem-participantes');
+            countSpan.textContent = parseInt(countSpan.textContent) - 1;
+
+            // Mostra mensagem se a lista ficar vazia
+            if(participantsListContainer.children.length === 0){
+                participantsListContainer.innerHTML = '<p>Ainda não há participantes nesta excursão.</p>';
+            }
+
+        } catch (error) {
+            console.error('Erro ao remover participante:', error);
+            alert('Não foi possível remover o participante. Tente novamente.');
+        }
+    };
     
     // Funções de controle do Modal
     const openModal = () => modal.classList.add('show');
-    const closeModal = () => modal.classList.remove('show');
+    const closeModal = () => {
+        modal.classList.remove('show');
+        // Reseta o estado do modal para "Adicionar"
+        editingParticipantId = null;
+        modalTitle.textContent = 'Adicionar Novo Participante';
+        submitButton.textContent = 'Salvar Participante';
+        participantForm.reset();
+    };
 
     // === Lógica de Eventos ===
 
-    // Troca de Abas (Visão Geral / Participantes)
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(t => t.classList.remove('active'));
@@ -146,15 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Controle do Modal
     openModalBtn.addEventListener('click', openModal);
     closeModalBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal(); // Fecha se clicar fora do conteúdo
+        if (e.target === modal) closeModal(); 
     });
 
-    // Submissão do Formulário
-    participantForm.addEventListener('submit', handleAddParticipant);
+    participantForm.addEventListener('submit', handleFormSubmit);
 
     // === Inicialização ===
     loadExcursionData();

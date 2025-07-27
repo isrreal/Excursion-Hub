@@ -3,6 +3,9 @@ const path = require('path');
 const ExcursaoService = require('../public/javascripts/services/excursoes.service');
 const router = express.Router();
 
+const participantesRouter = require('./participantes.routes');
+router.use('/:excursaoId/participantes', participantesRouter);
+
 router.get(
     "/excursoes/:id",
     (request, response) => {
@@ -14,8 +17,6 @@ router.get(
         }
     }
 );
-
-module.exports = router;
 
 router.post(
     "/excursoes",
@@ -69,3 +70,4 @@ router.delete(
     }
 );
 
+module.exports = router;
