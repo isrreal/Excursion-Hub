@@ -13,7 +13,29 @@ const writeData = (data) => fs.writeFileSync(dbPath, JSON.stringify(data, null, 
 class ExcursaoService {
     static listarExcursoes() {
         const data = readData();
-        return data.excursoes;
+        const todasExcursoes = data.excursoes;
+
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        const proximas = [];
+        const passadas = [];
+
+        todasExcursoes.forEach(excursao => {
+            const dataParaComparar = excursao.dataTermino ? excursao.dataTermino : excursao.data;
+            const dataFinalExcursao = new Date(dataParaComparar);
+            const status = dataFinalExcursao < hoje ? 'passada' : 'proxima'; // Define o status
+
+            excursao.status = status; // Adiciona a propriedade 'status' ao objeto da excursão
+
+            if (status === 'passada') {
+                passadas.push(excursao);
+            } else {
+                proximas.push(excursao);
+            }
+        });
+
+        return { proximas, passadas };
     }
 
     static recuperarExcursao(id) {

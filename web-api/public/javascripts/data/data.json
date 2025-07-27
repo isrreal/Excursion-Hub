@@ -2,69 +2,68 @@
   "excursoes": [
     {
       "id": 1,
-      "localDeViagem": "Porto das Dunas",
+      "localDeViagem": "Porto das Dunas (Passada)",
       "organizador": "Ana Silva",
-      "data": "15 de julho de 2024",
+      "data": "2024-07-15",
+      "dataTermino": "2024-07-16",
       "destino": "Porto das Dunas, Aquiraz",
-      "descricao": "Aproveite um dia incrível no Porto das Dunas, um dos destinos mais famosos do litoral cearense, localizado a poucos minutos de Fortaleza. Com suas praias extensas, dunas douradas e o famoso parque aquático Beach Park, a região oferece diversão, descanso e paisagens de tirar o fôlego.",
-      "participantes": [
-        {
-          "id": 1,
-          "nome": "Teste ",
-          "email": "test@gmail.com",
-          "telefone": "888787",
-          "status": "pago"
-        },
-        {
-          "id": 2,
-          "nome": "aaa",
-          "email": "eee@asj.c",
-          "telefone": "444",
-          "status": "pago"
-        }
-      ],
-      "quantidadeDeParticipantes": 2
+      "descricao": "Aproveite um dia incrível no Porto das Dunas...",
+      "custoPessoa": 50,
+      "veiculo": "Ônibus",
+      "participantes": [],
+      "quantidadeDeParticipantes": 0
     },
     {
       "id": 2,
-      "localDeViagem": "Jericoacoara",
+      "localDeViagem": "Jericoacoara (Próxima)",
       "organizador": "Carlos Mendes",
-      "data": "22 de julho de 2024",
+      "data": "2025-08-22",
+      "dataTermino": "2025-08-25",
       "destino": "Jericoacoara, Jijoca de Jericoacoara",
-      "descricao": "Descubra as belezas naturais de Jericoacoara, um dos destinos mais encantadores do Brasil. Com suas praias paradisíacas, lagoas cristalinas, dunas imponentes e o famoso pôr do sol na Duna do Pôr do Sol, Jeri é o lugar perfeito para relaxar, praticar esportes ao ar livre e se conectar com a natureza.",
+      "descricao": "Descubra as belezas naturais...",
+      "custoPessoa": 150,
+      "veiculo": "Van Executiva",
       "participantes": [],
       "quantidadeDeParticipantes": 0
     },
     {
       "id": 3,
-      "localDeViagem": "Canoa Quebrada",
+      "localDeViagem": "Canoa Quebrada (Próxima)",
       "organizador": "Mariana Lopes",
-      "data": "29 de julho de 2024",
+      "data": "2025-09-29",
+      "dataTermino": null,
       "destino": "Canoa Quebrada, Aracati",
-      "descricao": "Venha curtir a energia vibrante de Canoa Quebrada, conhecida por suas falésias avermelhadas, mar cristalino e atmosfera boêmia. Passeios de buggy, voos de parapente e noites animadas na Broadway fazem parte da experiência. Um destino perfeito para quem busca aventura e diversão com um toque rústico.",
+      "descricao": "Venha curtir a energia vibrante...",
+      "custoPessoa": 75.5,
+      "veiculo": "Micro-ônibus",
       "participantes": [],
       "quantidadeDeParticipantes": 0
     },
     {
       "id": 4,
+      "localDeViagem": "Guaramiranga (Passada)",
+      "organizador": "João Pedro",
+      "data": "2025-06-01",
+      "dataTermino": "2025-06-02",
+      "destino": "Guaramiranga, Ceará",
+      "descricao": "Curta o frio da serra cearense.",
+      "custoPessoa": "R$ 120,00",
+      "veiculo": "carro",
+      "participantes": [],
+      "quantidadeDeParticipantes": 0
+    },
+    {
+      "id": 5,
       "localDeViagem": "Teste",
       "organizador": "Novo Organizador",
-      "data": "2025-07-29",
+      "data": "2025-07-31",
       "destino": "Fortaleza",
-      "descricao": "nassa",
-      "custoPessoa": "R$ 100,00",
-      "veiculo": "carro",
-      "dataTermino": "2025-08-05",
-      "participantes": [
-        {
-          "id": 1,
-          "nome": "Excursion Hub",
-          "email": "test@gmail.com",
-          "telefone": "888787",
-          "status": "pago"
-        }
-      ],
-      "quantidadeDeParticipantes": 1
+      "descricao": "massa",
+      "custoPessoa": "R$ 24,90",
+      "veiculo": "Carro",
+      "dataTermino": "2025-08-04",
+      "participantes": [],
+      "quantidadeDeParticipantes": 0
     }
   ]
 }

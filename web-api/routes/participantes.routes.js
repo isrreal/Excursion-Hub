@@ -44,5 +44,16 @@ router.delete("/:participanteId", (request, response) => {
     }
 });
 
+router.patch("/:participanteId/pagamento", (request, response) => {
+    try {
+        const excursaoId = parseInt(request.params.excursaoId);
+        const participanteId = parseInt(request.params.participanteId);
+        const participanteAtualizado = ParticipanteService.atualizarStatusPagamento(excursaoId, participanteId);
+        response.json(participanteAtualizado);
+    } catch (error) {
+        response.status(400).json({ message: "Erro ao atualizar pagamento", error: error.message });
+    }
+});
+
 
 module.exports = router;

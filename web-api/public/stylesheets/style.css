@@ -24,6 +24,31 @@ ul {
     padding: 20px;
 }
 
+
+/* Estilo padrão para o status dot (pode ser mantido ou alterado) */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+/* Estilo específico para excursões futuras (cor verde) */
+.excursao.proxima .status-dot {
+    background-color: #2ecc71; /* Verde */
+}
+
+/* Estilo específico para excursões passadas (cor laranja) */
+.excursao.passada .status-dot {
+    background-color: #e67e22; /* Laranja */
+}
+
+.proximas-passadas-selection div.active {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
 .container-excursoes {
     background-color: #ffffff;
     padding: 30px;

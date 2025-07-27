@@ -19,8 +19,13 @@ class ParticipanteService {
 
         const novoParticipante = {
             id: excursao.participantes.length > 0 ? Math.max(...excursao.participantes.map(p => p.id)) + 1 : 1,
-            ...dadosParticipante,
-            status: 'pago'
+            nome: dadosParticipante.nome,
+            email: dadosParticipante.email,
+            telefone: dadosParticipante.telefone,
+            // --- NOVOS CAMPOS DE PAGAMENTO ---
+            valorAPagar: excursao.custoPessoa || 0,
+            statusPagamento: 'Pendente',
+            valorPago: 0
         };
         
         excursao.participantes.push(novoParticipante);
@@ -59,6 +64,28 @@ class ParticipanteService {
         writeData(data); // Salva os dados no arquivo
         return true;
     }
+
+     static atualizarStatusPagamento(excursaoId, participanteId) {
+        const data = readData();
+        const excursao = data.excursoes.find(e => e.id === excursaoId);
+        if (!excursao) throw new Error("Excursão não encontrada.");
+
+        const participante = excursao.participantes.find(p => p.id === participanteId);
+        if (!participante) throw new Error("Participante não encontrado.");
+
+        // Lógica para alternar o status e atualizar o valor pago
+        if (participante.statusPagamento === 'Pendente') {
+            participante.statusPagamento = 'Pago';
+            participante.valorPago = participante.valorAPagar;
+        } else {
+            participante.statusPagamento = 'Pendente';
+            participante.valorPago = 0;
+        }
+
+        writeData(data); // Salva a alteração no arquivo
+        return participante; // Retorna o participante com os dados atualizados
+    }
+
 }
 
 module.exports = ParticipanteService;
