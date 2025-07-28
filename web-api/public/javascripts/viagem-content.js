@@ -22,27 +22,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Funções ===
 
-   const loadExcursionData = async () => {
-        // ... (início da função)
+const loadExcursionData = async () => {
+        if (!excursionId) {
+            window.location.href = 'index.html';
+            return;
+        }
         try {
             const response = await fetch(`/api/excursoes/${excursionId}`);
             if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
             
             const excursion = await response.json();
             
+            // --- FUNÇÃO AUXILIAR PARA FORMATAR DATAS ---
+            const formatarData = (dataString) => {
+                if (!dataString) return null;
+                const dataObj = new Date(dataString);
+                // Adiciona o fuso horário para corrigir a exibição de dia
+                return dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            };
+
+            const dataInicioFormatada = formatarData(excursion.data);
+            const dataFimFormatada = formatarData(excursion.dataTermino);
+
+            let dataExibicao = dataInicioFormatada;
+            if (dataFimFormatada && dataFimFormatada !== dataInicioFormatada) {
+                dataExibicao = `${dataInicioFormatada} até ${dataFimFormatada}`;
+            }
+            
+            // --- ATUALIZAÇÃO DOS ELEMENTOS NA TELA ---
             document.getElementById('viagem-titulo').textContent = `Viagem a ${excursion.localDeViagem}`;
             document.getElementById('organizador').textContent = excursion.organizador;
             document.getElementById('viagem-participantes').textContent = excursion.quantidadeDeParticipantes;
-            document.getElementById('data').textContent = new Date(excursion.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            document.getElementById('data').textContent = dataExibicao; // CORREÇÃO APLICADA AQUI
             document.getElementById('destino').textContent = excursion.destino;
-            document.getElementById('veiculo').textContent = excursion.veiculo; // ADICIONE ESTA LINHA
+            document.getElementById('veiculo').textContent = excursion.veiculo;
             document.querySelector('#descricao span').textContent = excursion.descricao;
 
             loadParticipants(excursion.participantes || []);
             loadPayments(excursion.participantes || []);
 
         } catch (error) {
-            // ... (resto da função)
+            console.error('Erro ao buscar a excursão:', error);
+            alert('Houve um erro ao carregar os dados da excursão.');
+            window.location.href = 'index.html';
         }
     };
 

@@ -75,8 +75,27 @@
       "custoPessoa": "R$ 100,00",
       "veiculo": "Onibus",
       "dataTermino": "2025-08-27",
-      "participantes": [],
-      "quantidadeDeParticipantes": 0
+      "participantes": [
+        {
+          "id": 1,
+          "nome": "Joao",
+          "email": "joao@gmail.com",
+          "telefone": "3332",
+          "valorAPagar": "R$ 100,00",
+          "statusPagamento": "Pago",
+          "valorPago": "R$ 100,00"
+        },
+        {
+          "id": 2,
+          "nome": "Maria",
+          "email": "maria@gmail.com",
+          "telefone": "2121",
+          "valorAPagar": "R$ 100,00",
+          "statusPagamento": "Pago",
+          "valorPago": "R$ 100,00"
+        }
+      ],
+      "quantidadeDeParticipantes": 2
     }
   ]
 }

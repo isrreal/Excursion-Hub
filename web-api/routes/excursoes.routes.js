@@ -1,10 +1,14 @@
 const express = require("express");
 const path = require('path');
-const ExcursaoService = require('../public/javascripts/services/excursoes.service');
+const ExcursaoService = require('../public/javascripts/services/excursoes.service.js');
 const router = express.Router();
 
+// --- CORREÇÃO APLICADA AQUI ---
+// Importa o router de participantes
 const participantesRouter = require('./participantes.routes');
-router.use('/:excursaoId/participantes', participantesRouter);
+// Conecta o router de participantes à rota correta, incluindo o /excursoes/
+router.use('/excursoes/:excursaoId/participantes', participantesRouter);
+
 
 router.get(
     "/excursoes/:id",
@@ -21,12 +25,10 @@ router.get(
 router.post(
     "/excursoes",
     (request, response) => {
-        // Verifica se o usuário está logado na sessão
         if (!request.session.user) {
             return response.status(401).json({ message: "Não autorizado: faça login para criar uma excursão." });
         }
         try {
-            // Passa o objeto do usuário da sessão para o serviço
             const novaExcursao = ExcursaoService.criarExcursao(request.body, request.session.user);
             response.status(201).json(novaExcursao);
         } catch (error) {
@@ -34,7 +36,6 @@ router.post(
         }
     }
 );
-
 
 router.get(
     "/excursoes",
@@ -75,5 +76,6 @@ router.delete(
         }
     }
 );
+
 
 module.exports = router;
