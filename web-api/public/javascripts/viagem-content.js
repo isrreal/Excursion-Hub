@@ -10,19 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const participantsListContainer = document.getElementById('lista-participantes-container');
     const paymentsListContainer = document.getElementById('lista-pagamentos-container');
     
-    // Verifica se os elementos cruciais existem antes de prosseguir
-    if (!modal || !participantForm || !openModalBtn) {
-        console.error("ERRO: Elementos do modal ou botão de adicionar não foram encontrados no HTML.");
+    // Seletores para o novo modal de detalhes
+    const detailsModal = document.getElementById('participant-details-modal');
+    const detailsCloseBtn = document.getElementById('details-close-btn');
+
+    // Verificação de segurança para garantir que os elementos HTML existem
+    if (!modal || !participantForm || !openModalBtn || !detailsModal || !detailsCloseBtn) {
+        console.error("ERRO: Um ou mais elementos essenciais do HTML (modais, formulários ou botões) não foram encontrados. Verifique o arquivo viagem-content.html.");
         return; 
     }
 
     const modalTitle = modal.querySelector('h2');
     const submitButton = modal.querySelector('button[type="submit"]');
     let editingParticipantId = null;
+    const logoutButton = document.getElementById('logout-button');
 
     // === Funções ===
 
-const loadExcursionData = async () => {
+    const loadExcursionData = async () => {
         if (!excursionId) {
             window.location.href = 'index.html';
             return;
@@ -33,11 +38,9 @@ const loadExcursionData = async () => {
             
             const excursion = await response.json();
             
-            // --- FUNÇÃO AUXILIAR PARA FORMATAR DATAS ---
             const formatarData = (dataString) => {
                 if (!dataString) return null;
                 const dataObj = new Date(dataString);
-                // Adiciona o fuso horário para corrigir a exibição de dia
                 return dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
             };
 
@@ -49,11 +52,10 @@ const loadExcursionData = async () => {
                 dataExibicao = `${dataInicioFormatada} até ${dataFimFormatada}`;
             }
             
-            // --- ATUALIZAÇÃO DOS ELEMENTOS NA TELA ---
             document.getElementById('viagem-titulo').textContent = `Viagem a ${excursion.localDeViagem}`;
             document.getElementById('organizador').textContent = excursion.organizador;
             document.getElementById('viagem-participantes').textContent = excursion.quantidadeDeParticipantes;
-            document.getElementById('data').textContent = dataExibicao; // CORREÇÃO APLICADA AQUI
+            document.getElementById('data').textContent = dataExibicao;
             document.getElementById('destino').textContent = excursion.destino;
             document.getElementById('veiculo').textContent = excursion.veiculo;
             document.querySelector('#descricao span').textContent = excursion.descricao;
@@ -88,7 +90,7 @@ const loadExcursionData = async () => {
         item.setAttribute('data-participant-id', participant.id);
         item.innerHTML = `
             <div class="participante-info">
-                <img src="images/user-icon.png" alt="Avatar" class="participante-avatar">
+                <img src="images/user-icon.png" alt="Avatar" class="participante-avatar" style="cursor: pointer;" title="Ver detalhes">
                 <div>
                     <div class="nome-participante">${participant.nome || 'Nome não informado'}</div>
                     <span class="status-participante pago">${participant.email || 'Status pendente'}</span>
@@ -100,6 +102,8 @@ const loadExcursionData = async () => {
             </div>
         `;
         participantsListContainer.appendChild(item);
+
+        item.querySelector('.participante-avatar').addEventListener('click', () => showParticipantDetails(participant));
         item.querySelector('.editar').addEventListener('click', () => handleEdit(participant));
         item.querySelector('.remover').addEventListener('click', () => handleRemove(participant.id));
     };
@@ -118,7 +122,6 @@ const loadExcursionData = async () => {
     const appendPaymentToDOM = (participant) => {
         const item = document.createElement('div');
         item.className = 'pagamento-item';
-        // Adiciona um ID ao elemento para facilitar a atualização
         item.setAttribute('data-payment-item-id', participant.id);
         
         const statusClass = (participant.statusPagamento === 'Pago') ? 'pago' : 'pendente';
@@ -127,7 +130,7 @@ const loadExcursionData = async () => {
 
         item.innerHTML = `
             <div class="pagamento-participante">
-                <img src="images/user-icon.png" alt="Avatar" class="pagamento-avatar">
+                <img src="images/user-icon.png" alt="Avatar" class="pagamento-avatar" style="cursor: pointer;" title="Ver detalhes">
                 <span>${participant.nome}</span>
             </div>
             <div class="pagamento-valor" id="valor-a-pagar-${participant.id}">
@@ -141,8 +144,8 @@ const loadExcursionData = async () => {
             </div>
         `;
         paymentsListContainer.appendChild(item);
-
-        // --- LÓGICA DO CLIQUE ADICIONADA AQUI ---
+        
+        item.querySelector('.pagamento-avatar').addEventListener('click', () => showParticipantDetails(participant));
         const statusTag = item.querySelector('.status-tag');
         statusTag.addEventListener('click', async () => {
             try {
@@ -152,11 +155,8 @@ const loadExcursionData = async () => {
                 if (!response.ok) throw new Error('Falha na atualização');
 
                 const participanteAtualizado = await response.json();
-
-                // Atualiza a tela em tempo real, sem recarregar tudo
                 const novoStatusClass = (participanteAtualizado.statusPagamento === 'Pago') ? 'pago' : 'pendente';
                 const novoValorPago = (participanteAtualizado.valorPago || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
                 statusTag.textContent = participanteAtualizado.statusPagamento;
                 statusTag.className = `status-tag ${novoStatusClass}`;
                 
@@ -249,6 +249,18 @@ const loadExcursionData = async () => {
         submitButton.textContent = 'Salvar Participante';
         participantForm.reset();
     };
+    
+    const showParticipantDetails = (participant) => {
+        document.getElementById('details-nome').textContent = participant.nome;
+        document.getElementById('details-email').textContent = participant.email;
+        document.getElementById('details-telefone').textContent = participant.telefone || 'Não informado';
+        
+        detailsModal.classList.add('show');
+    };
+
+    const closeDetailsModal = () => {
+        detailsModal.classList.remove('show');
+    };
 
     // === Lógica de Eventos ===
 
@@ -268,6 +280,20 @@ const loadExcursionData = async () => {
     closeModalBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     participantForm.addEventListener('submit', handleFormSubmit);
+
+    detailsCloseBtn.addEventListener('click', closeDetailsModal);
+    detailsModal.addEventListener('click', (e) => {
+        if (e.target === detailsModal) {
+            closeDetailsModal();
+        }
+    });
+
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await fetch('/api/users/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        });
+    }
 
     // === Inicialização ===
     loadExcursionData();

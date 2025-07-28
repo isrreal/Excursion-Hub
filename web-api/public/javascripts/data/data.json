@@ -96,6 +96,19 @@
         }
       ],
       "quantidadeDeParticipantes": 2
+    },
+    {
+      "id": 7,
+      "localDeViagem": "Pedra da Galinha",
+      "organizador": "Teste",
+      "data": "2025-07-28",
+      "destino": "Quixadá",
+      "descricao": "muito massa",
+      "custoPessoa": "R$ 0,12",
+      "veiculo": "Moto",
+      "dataTermino": "2025-07-28",
+      "participantes": [],
+      "quantidadeDeParticipantes": 0
     }
   ]
 }

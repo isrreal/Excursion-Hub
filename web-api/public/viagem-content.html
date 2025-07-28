@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="stylesheets/pagamentos-view.css">
         <link rel="stylesheet" href="stylesheets/modal.css">
         <link rel="stylesheet" href="stylesheets/footer.css">
+        <link rel="stylesheet" href="stylesheets/details-modal.css">
              <title>ExcursionHub</title>
 
         
@@ -105,5 +106,20 @@
         <p>&copy; 2025 ExcursionHub. Todos os direitos reservados.</p>
     </footer>
 
+
+    <div id="participant-details-modal" class="details-modal-overlay">
+        <div class="details-modal-card">
+            <img src="images/user-icon.png" alt="Avatar" class="details-avatar">
+            <h2 id="details-nome" class="details-nome">Carregando...</h2>
+            <ul class="details-info">
+                <li><strong>Email:</strong> <span id="details-email">...</span></li>
+                <li><strong>Telefone:</strong> <span id="details-telefone">...</span></li>
+            </ul>
+            <button id="details-close-btn" class="details-close-btn">Fechar</button>
+        </div>
+    </div>
+
+
+    
     </body>
 </html>
